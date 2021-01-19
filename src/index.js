@@ -1,5 +1,6 @@
 const populateResults = (results) => {
   const resultsSection = document.querySelector('.results')
+  resultsSection.innerHTML = ''
   results.forEach(result => {
     const resultTitle = `<p>${result.name}</p>`
     resultsSection.innerHTML += resultTitle
