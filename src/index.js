@@ -7,13 +7,35 @@ const populateResults = (results) => {
   })
 }
 
+const populateErrorMessage = message => {
+  const messages = document.querySelector('.messages')
+  messages.innerText = message
+}
+
 const searchPeople = (searchTerm) => {
+  if (searchTerm === '') {
+    return populateErrorMessage('Please enter a valid search term')
+  }
+
+  const checkResponse = (response) => {
+    if (!response.ok) {
+      return populateErrorMessage('Something went wrong. Please try again')
+    }
+  }
+
   return fetch(`https://swapi.dev/api/people/?search=${searchTerm}`)
     .then(response => {
+      // use case for bad request - 422 etc.
+      checkResponse(response)
       return response.json()
     })
     .then(data => {
-      populateResults(data.results)
+      // use case for empty results
+      if (data.results.length > 0) {
+        populateResults(data.results)
+      } else {
+        populateErrorMessage(`No results for search term ${searchTerm}`)
+      }
     })
     .catch(error => console.log(error))
 }
